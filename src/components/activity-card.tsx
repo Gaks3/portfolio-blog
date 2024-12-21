@@ -1,6 +1,8 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
+import Image from 'next/image'
 import Link from 'next/link'
+import { Suspense } from 'react'
 
 interface Props {
   title: string
@@ -24,11 +26,12 @@ export function ActivityCard({
   links,
 }: Props) {
   return (
-    <li className='relative ml-10 py-4'>
+    <div className='relative ml-10 py-4'>
       <div className='absolute -left-16 top-2 flex items-center justify-center bg-white rounded-full'>
         <Avatar className='border size-12 m-auto'>
-          <AvatarImage src={image} alt={title} className='object-contain' />
-          <AvatarFallback>{title[0]}</AvatarFallback>
+          <Suspense fallback={<AvatarFallback>{title[0]}</AvatarFallback>}>
+            <Image src={image!} alt={title} width={150} height={150} />
+          </Suspense>
         </Avatar>
       </div>
       <div className='flex flex-1 flex-col justify-start gap-1'>
@@ -57,6 +60,6 @@ export function ActivityCard({
           ))}
         </div>
       )}
-    </li>
+    </div>
   )
 }

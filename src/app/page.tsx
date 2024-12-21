@@ -1,12 +1,14 @@
 import { ActivityCard } from '@/components/activity-card'
-import BlurFade from '@/components/magicui/blur-fade'
+import BlurFade, { BlurFadeLi } from '@/components/magicui/blur-fade'
 import BlurFadeText from '@/components/magicui/blur-fade-text'
 import { ProjectCard } from '@/components/project-card'
 import { ResumeCard } from '@/components/resume-card'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { DATA } from '@/data/resume'
+import Image from 'next/image'
 import Link from 'next/link'
+import { Suspense } from 'react'
 import Markdown from 'react-markdown'
 
 const BLUR_FADE_DELAY = 0.04
@@ -32,8 +34,18 @@ export default function Page() {
             </div>
             <BlurFade delay={BLUR_FADE_DELAY}>
               <Avatar className='size-28 border'>
-                <AvatarImage alt={DATA.name} src={DATA.avatarUrl} />
-                <AvatarFallback>{DATA.initials}</AvatarFallback>
+                <Suspense
+                  fallback={<AvatarFallback>{DATA.initials}</AvatarFallback>}
+                >
+                  <Image
+                    src={DATA.avatarUrl}
+                    alt={DATA.name}
+                    width={200}
+                    height={200}
+                    quality={75}
+                    priority
+                  />
+                </Suspense>
               </Avatar>
             </BlurFade>
           </div>
@@ -148,7 +160,7 @@ export default function Page() {
           <BlurFade delay={BLUR_FADE_DELAY * 14}>
             <ul className='mb-4 ml-4 divide-y divide-dashed border-l'>
               {DATA.activity.map((project, id) => (
-                <BlurFade
+                <BlurFadeLi
                   key={project.title + project.dates}
                   delay={BLUR_FADE_DELAY * 15 + id * 0.05}
                 >
@@ -159,7 +171,7 @@ export default function Page() {
                     image={project.image}
                     links={project.links}
                   />
-                </BlurFade>
+                </BlurFadeLi>
               ))}
             </ul>
           </BlurFade>
@@ -179,7 +191,7 @@ export default function Page() {
                 Want to chat? Just shoot me a dm{' '}
                 <Link
                   href={DATA.contact.social.Instagram.url}
-                  className='text-blue-500 hover:underline'
+                  className='text-blue-500 dark:text-blue-400 hover:underline'
                 >
                   with a direct question on instagram
                 </Link>{' '}
