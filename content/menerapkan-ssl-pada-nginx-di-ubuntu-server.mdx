@@ -1,0 +1,233 @@
+---
+title: 'Menerapkan SSL pada Nginx di Ubuntu Server'
+publishedAt: 'December 20, 2024'
+summary: 'SSL adalah protokol keamanan yang menggunakan enkripsi dan sertifikat digital untuk melindungi komunikasi antara server dan klien dari penyadapan, peretasan, dan modifikasi.'
+image: '/thumbnails/menerapkan-ssl-pada-nginx-di-ubuntu-server.png'
+---
+
+Hi there! 👋
+
+### Table of contents
+
+- [Apa itu SSL?](#apa-itu-ssl)
+- [Bagaimana SSL bekerja?](#bagaimana-ssl-bekerja)
+- [Bagaimana cara kerja ssl?](#bagaimana-cara-kerja-ssl)
+- [Apa itu HTTPS?](#apa-itu-https)
+- [Manfaat SSL](#manfaat-ssl)
+- [Langkah-langkah](#langkah-langkah)
+
+## Apa itu SSL?
+
+SSL (Secure Sockets Layer) adalah sebuah protokol keamanan yang dikembangkan untuk memastikan komunikasi antara server dan klien (misalnya antara browser dan server web) berlangsung secara aman dan terenkripsi. SSL dirancang untuk melindungi data dari penyadapan, peretasan, dan modifikasi selama transmisi. Pada dasarnya, SSL bekerja dengan menggunakan kombinasi enkripsi simetris dan asimetris, serta konsep sertifikat digital yang memverifikasi keabsahan server atau klien.
+
+## Bagaimana SSL bekerja?
+
+SSL bekerja melalui beberapa langkah utama, yaitu :
+
+1. **Handshake SSL**\
+   Proses dimulai dengan pertukaran informasi antara klien (misalnya browser) dan server. Protokol ini menentukan algoritma enkripsi yang akan digunakan dan mengidentifikasi kedua pihak.
+2. **Sertifikat SSL**\
+   Server mengirimkan sertifikat digital kepada klien, yang berisi kunci publik dan informasi tentang identitas server yang diterbitkan oleh otoritas sertifikasi (CA – Certificate Authority).
+3. **Validasi Sertifikat**\
+   Klien akan memverifikasi sertifikat server, memeriksa apakah sertifikat valid, tidak kedaluwarsa, dan ditandatangani oleh CA yang tepercaya. Jika sertifikat valid, klien melanjutkan ke tahap berikutnya.
+4. **Pembuatan Kunci Enkripsi Simetris**\
+   Setelah validasi, klien dan server menciptakan kunci enkripsi sesi menggunakan metode enkripsi asimetris. Kunci sesi ini adalah kunci simetris yang digunakan untuk mengenkripsi dan mendekripsi data selama sesi komunikasi berlangsung. Kunci simetris lebih cepat dan efisien untuk transmisi data.
+5. **Enkripsi Data**\
+   Semua komunikasi setelah tahap ini dienkripsi menggunakan kunci simetris sesi. Data seperti kredensial login, informasi kartu kredit, dan lainnya akan terlindungi dengan aman selama transmisi.
+6. **Terminasi Sesi**\
+   Setelah komunikasi selesai, sesi SSL diakhiri, dan kunci enkripsi sesi dihancurkan.
+
+Situs web yang mengimplementasikan SSL/TLS memiliki "HTTPS" dalam URL-nya, bukan "HTTP."
+
+## Bagaimana cara kerja SSL?
+
+1. Untuk memberikan tingkat privasi yang tinggi, SSL mengenkripsi data yang ditransmisikan melalui web. Ini berarti siapa pun yang mencoba mencegat data ini hanya akan melihat campuran karakter yang kacau yang hampir tidak mungkin didekripsi.
+2. SSL memulai proses otentikasi yang disebut jabat tangan antara dua perangkat yang berkomunikasi untuk memastikan bahwa kedua perangkat tersebut benar-benar sesuai dengan yang mereka klaim.
+3. SSL juga menandatangani data secara digital untuk memberikan integritas data, memverifikasi bahwa data tidak dirusak sebelum mencapai penerima yang dituju.
+
+## Apa itu HTTPS?
+
+Hypertext transfer protocol secure (HTTPS) adalah versi aman dari HTTP, yang merupakan protokol utama yang digunakan untuk mengirim data antara peramban web dan situs web. HTTPS dienkripsi untuk meningkatkan keamanan transfer data. Hal ini sangat penting terutama ketika pengguna mengirimkan data sensitif, seperti masuk ke rekening bank, layanan email, atau penyedia asuransi kesehatan. Situs web apa pun, terutama yang memerlukan kredensial login, harus menggunakan HTTPS. Pada peramban web modern seperti Chrome, situs web yang tidak menggunakan HTTPS ditandai dengan cara yang berbeda dari yang menggunakan HTTPS.
+
+## Manfaat SSL
+
+1. Keamanan: SSL melindungi data yang ditransmisikan dari penyadapan, modifikasi, dan pencurian.
+2. Autentikasi: Sertifikat SSL memastikan bahwa server adalah entitas yang sah dan tepercaya.
+3. Kepercayaan Pengguna: Situs web dengan SSL biasanya menampilkan ikon gembok di browser, yang menunjukkan bahwa koneksi aman, sehingga meningkatkan kepercayaan pengguna.
+
+## Langkah-langkah
+
+1. **Instalasi Ubuntu Server untuk Web Server**\
+   a. Lakukan instalasi Ubuntu Server pada VM VirtualBox\
+   b. Pada setting network Adapter 1 pada Attached to : Bridge\
+   c. Setting Interface enp0s3
+
+   ```yaml
+   # /etc/netplan/00-installer-config.yaml
+
+   network:
+   ethernets:
+     enp0s3:
+       dhcp4: true
+   version: 2
+   ```
+
+   d. Setelah selesai konfigurasi jaringannya jalankan:
+
+   ```cmd
+   netplan apply
+   ```
+
+2. **Instalasi Web Server Nginx**
+
+   a. Lakukan update
+
+   ```cmd
+   apt update
+   ```
+
+   b. Install Nginx
+
+   ```cmd
+   apt install nginx -y
+   ```
+
+   c. Cek web server nginx apakah sudah aktif
+
+   ```cmd
+   systemctl status nginx
+   ```
+
+3. **Membuat Self-Signed SSL Certificate**\
+    Membuat sebuah self-signed key and certificate menggunakan OpenSSL dalam single command. Membuat self-signed SSL certificate dengan menggunakan perintah openssl req di bawah ini:
+
+   ```cmd
+   sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt
+   ```
+
+   Penjelasan perintah :\
+    a. req: Memulai permintaan sertifikat.\
+    b. -x509: Menghasilkan sertifikat X.509 yang ditandatangani sendiri.\
+    c. -nodes: Tidak mengenkripsi kunci pribadi.\
+    d. -days 365: Sertifikat akan berlaku selama 365 hari.\
+    e. -newkey rsa:2048: Membuat kunci pribadi RSA 2048 bit.
+
+   Perintah di atas akan membuat file key dan sertifikat. Ketika perintah dijalankan, diharuskan untuk mengisi informasi sertifikat seperti terlihat pada gambar di bawah ini, pastikan pada Common Name sesuai nama domain atau ip addressnya.
+
+   ```powershell
+   Country Name (2 letter code) [AU]:ID
+   State or Province Name (full name) [Some-State]:DIY
+   Locality Name (eg, city) []:Yogyakarta
+   Organization Name (eg, company) [Internet Widgits Pty Ltd]:SMKN 2 Yka
+   Organizational Unit Name (eg, section) []:XII SIJA 1
+   Common Name (e.g. server FQDN or YOUR name) []:192.168.1.16
+   Email Address []:info@smk2-yk.sch.id
+   ```
+
+   Jika sudah selesai, tekan Enter. Nantinya, file key dan sertifikat yang dibuat akan disimpan di direktori /etc/ssl.
+
+4. **Buat Diffie-Hellman Group**\
+   Diffie-Hellman group digunakan untuk meningkatkan keamanan enkripsi. Selanjutnya, membuat file dhparam.pem yang akan digunakan saat konfigurasi Nginx. Untuk membuatnya, jalankan perintah berikut ini:
+
+   ```powershell
+   sudo openssl dhparam -out /etc/nginx/dhparam.pem 2048
+   ```
+
+5. **Membuat Cuplikan Konfigurasi yang Menunjuk ke Kunci dan Sertifikat SSL**\
+    Edit file konfigurasi self-signed.conf yang berada di direktori /etc/nginx/snippets
+
+   ```powershell
+   sudo nano /etc/nginx/snippets/self-signed.conf
+   ```
+
+   Tambahkan baris konfigurasi seperti di bawah ini
+
+   ```powershell
+   ssl_certificate /etc/ssl/certs/nginx-selfsigned.crt;
+   ssl_certificate_key /etc/ssl/private/nginx-selfsigned.key;
+   ```
+
+   Pada konfigurasi di atas menetapkan perintah ssl_certificate ke berkas sertifikat dan ssl_certificate_key ke kunci terkait.
+   Selanjutnya, membuat snippet lagi yang berfungsi untuk mendefinisikan beberapa pengaturan SSL. Hal ini digunakan untuk agar Ngix dapat menggunakan rangkaian sandi SSL yang kuat dan mengaktifkan fitur advance untuk menjaga server tetap aman.
+   Edit file konfigurasi ssl-params.conf yang berada di direktori /etc/nginx/snippets
+
+   ```powershell
+   sudo nano /etc/nginx/snippets/ssl-params.conf
+   ```
+
+   Tambahkan beberapa konfigurasi berikut ke file ssl-params.conf
+
+   ```powershell
+   ssl_protocols TLSv1.3;
+   ssl_prefer_server_ciphers on;
+   ssl_dhparam /etc/nginx/dhparam.pem;
+   ssl_ciphers EECDH+AESGCM:EDH+AESGCM;
+   ssl_ecdh_curve secp384r1;
+   ssl_session_timeout  10m;
+   ssl_session_cache shared:SSL:10m;
+   ssl_session_tickets off;
+   ssl_stapling on;
+   ssl_stapling_verify on;
+   resolver 8.8.8.8 8.8.4.4 valid=300s;
+   resolver_timeout 5s;
+   # Disable strict transport security for now. You can uncomment the following
+   # line if you understand the implications.
+   # add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload";
+   add_header X-Frame-Options DENY;
+   add_header X-Content-Type-Options nosniff;
+   add_header X-XSS-Protection "1; mode=block";
+   ```
+
+6. **Melakukan Konfigurasi Nginx untuk Menggunakan SSL**\
+   Edit file konfigurasi Nginx untuk menambahkan dukungan SSL. Buka file konfigurasi default Nginx:
+
+   ```powershell
+   sudo nano /etc/nginx/sites-available/default
+   ```
+
+   Pada file konfigurasi nginx ini, perbarui dua pernyataan listen untuk menggunakan port 443 dan ssl, lalu sertakan dua file snippet yang telah kita buat pada langkah sebelumnya.
+
+   ```powershell
+   server {
+      listen 443 ssl;
+      listen [::]:443 ssl;
+      include snippets/self-signed.conf;
+      include snippets/ssl-params.conf;
+   }
+
+   server {
+      listen 80 default_server;
+      listen [::]:80 default_server;
+
+      root /var/www/html;
+      index index.html index.htm index.nginx-debian.html;
+
+      server_name 192.168.1.16;
+
+      location / {
+               try_files $uri $uri/ =404;
+      }
+   }
+   ```
+
+7. **Menguji konfigurasi Nginx**\
+    Setelah mengedit file konfigurasi, uji konfigurasinya untuk memastikan tidak ada kesalahan.
+
+   ```powershell
+   sudo nginx -t
+   ```
+
+   Jika berhasil akan menampilkan output seperti di bawah ini.
+
+   ```powershell
+   nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+   nginx: configuration file /etc/nginx/nginx.conf test is successful
+   ```
+
+   Selanjutnya restart Nginx.
+
+   ```powershell
+   sudo systemctl restart nginx
+   ```
+
+That's it! Sekarang kalian sudah menerapkan SSL pada web server Nginx di Ubuntu Server. Jika ada pertanyaan DM saja di [Instagram](https://www.instagram.com/gaks_3/) dan saya akan berusaha membalasnya.
