@@ -4,7 +4,7 @@ import { HomeIcon, NotebookIcon } from 'lucide-react'
 export const DATA = {
   name: 'Ade Bagas Wicaksono',
   initials: 'Gaks',
-  url: 'https://pxd1ctdr-3000.asse.devtunnels.ms/',
+  url: 'https://adebagas.my.id/',
   location: 'Yogyakarta City',
   locationLink: 'https://www.google.com/maps/place/yogyakarta',
   description:
