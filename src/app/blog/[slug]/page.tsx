@@ -7,7 +7,7 @@ import { Suspense } from 'react'
 
 export async function generateStaticParams() {
   const posts = await getBlogPosts()
-  return posts.map((post) => ({ slug: post.slug }))
+  return posts.files.map((post) => ({ slug: post.slug }))
 }
 
 export async function generateMetadata({
