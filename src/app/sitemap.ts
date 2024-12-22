@@ -11,6 +11,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     {
       url: baseUrl,
     },
-    ...blogs.map((blog) => ({ url: blog.slug })),
+    ...blogs.files.map((blog) => ({ url: blog.slug })),
   ]
 }
