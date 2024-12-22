@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: `/opengraph.png`,
+        url: `/thumbnails/hello-world.png`,
       },
     ],
   },
