@@ -61,7 +61,6 @@ export const DATA = {
       },
     },
   },
-
   education: [
     {
       school: 'SMK Negeri 2 Yogyakarta',
@@ -244,4 +243,5 @@ export const DATA = {
       ],
     },
   ],
+  blogsPerPage: 10,
 } as const
