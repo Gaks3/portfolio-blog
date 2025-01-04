@@ -10,7 +10,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     {
       url: baseUrl,
+      lastModified: new Date(),
+      priority: 1,
     },
-    ...blogs.files.map((blog) => ({ url: `${baseUrl}${blog.slug}` })),
+    ...blogs.files.map((blog) => ({
+      url: `${baseUrl}${blog.slug}`,
+      lastModified: new Date(),
+      priority: 0.7,
+    })),
   ]
 }
