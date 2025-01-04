@@ -1,4 +1,4 @@
 User-Agent: *
-Disallow:
+Allow: /
 
 Sitemap: https://adebagas.my.id/sitemap.xml
