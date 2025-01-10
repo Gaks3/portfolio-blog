@@ -1,18 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
+
+
 <url>
-<loc>https://adebagas.my.id/</loc>
-<lastmod>2025-01-04T23:09:19.303Z</lastmod>
-<priority>1</priority>
+  <loc>https://adebagas.my.id/</loc>
+  <lastmod>2025-01-10T06:25:13+00:00</lastmod>
+  <priority>1.00</priority>
 </url>
 <url>
-<loc>https://adebagas.my.id/hello-world</loc>
-<lastmod>2025-01-04T23:09:19.303Z</lastmod>
-<priority>0.7</priority>
+  <loc>https://adebagas.my.id/blog</loc>
+  <lastmod>2025-01-10T06:25:13+00:00</lastmod>
+  <priority>0.80</priority>
 </url>
 <url>
-<loc>https://adebagas.my.id/menerapkan-ssl-pada-nginx-di-ubuntu-server</loc>
-<lastmod>2025-01-04T23:09:19.303Z</lastmod>
-<priority>0.7</priority>
+  <loc>https://adebagas.my.id/blog/hello-world</loc>
+  <lastmod>2025-01-10T06:25:13+00:00</lastmod>
+  <priority>0.64</priority>
 </url>
+<url>
+  <loc>https://adebagas.my.id/blog/menerapkan-ssl-pada-nginx-di-ubuntu-server</loc>
+  <lastmod>2025-01-10T06:25:13+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://adebagas.my.id/blog?page=1</loc>
+  <lastmod>2025-01-10T06:25:13+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+
+
 </urlset>
